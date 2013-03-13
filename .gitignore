@@ -1,0 +1,17 @@
+antares
+build
+*~
+#*#
+*.o
+*.d
+tmp
+
+# Temp files ignore
+.*.swp
+.*.swo
+~*
+*~
+
+# Old files
+*.old
+.*.old
