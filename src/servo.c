@@ -186,6 +186,7 @@ inline void _servo_setPassive(void)
  */
 inline void _servo_switch(void)
 {
+    led_on(2);
     // Turn off all current servos
     do
     {
@@ -212,7 +213,9 @@ inline void _servo_timerOverflow(void)
         if(servo_flags.active) // if we were in active mode
             _servo_setPassive(); // switch to passive
         else                   // if we were in passive mode
+        {
             _servo_setActive();  // switch to active
+        }
     }
     // 2. If there are no items, let's try to get 'em
     else if(num_add > 0) 
@@ -235,7 +238,9 @@ inline void _servo_timerCompare(void)
 {
     // Check mode of operation
     if(servo_flags.active) // in active mode, change levels
+    {
         _servo_switch();
+    }
     else                   // in passive mode, it could be only 235 interrupt
         _servo_prepare();  // prepare servos to run
 }
@@ -243,14 +248,11 @@ inline void _servo_timerCompare(void)
 // BIND FUNCTIONS INTO INTERRUPTS
 ISR(TIMER0_COMP_vect)
 {
-    led_on(0);
     _servo_timerCompare();
-    led_off(0);
+    led_off(2);
 }
 
 ISR(TIMER0_OVF_vect)
 {
-    led_on(2);
     _servo_timerOverflow();
-    led_off(2);
 }
