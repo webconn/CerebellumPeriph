@@ -68,12 +68,12 @@ servo servo_add(volatile uint8_t * port, uint8_t pin)
         return SERVO_QUEUE_FULL; // error code
 
     // 1. Init port DDR (if port is correct and is not PORTF, DDR reg is next by pointer
-    DDRA = 0xFF;
+    *(port + 1) |= (1<<pin);
 
     // 2. Insert description into table
     queue[new_id].port = port;
     queue[new_id].bitmask = (1<<pin);
-    queue[new_id].value = 1;
+    queue[new_id].value = 20; // servo-safe, I hope
 
     // 3. Add servo to the end of real queue
     p_queue[new_id] = &queue[new_id];
@@ -186,7 +186,6 @@ inline void _servo_setPassive(void)
  */
 inline void _servo_switch(void)
 {
-    led_on(2);
     // Turn off all current servos
     do
     {
@@ -249,7 +248,6 @@ inline void _servo_timerCompare(void)
 ISR(TIMER0_COMP_vect)
 {
     _servo_timerCompare();
-    led_off(2);
 }
 
 ISR(TIMER0_OVF_vect)
